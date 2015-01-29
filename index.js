@@ -1,9 +1,8 @@
 'use strict';
 
-var fs = require('fs');
 var action = process.argv[2];
-var resemble = require('node-resemble-js');
 var captureScreenshot = require('./lib/captureScreenshot');
+var generateReport = require('./lib/generateReport');
 var pages = require('./pages');
 var imagesFolder = 'images/';
 
@@ -18,7 +17,7 @@ function screenshotHandler(err, data) {
 if (!action) {
   console.log('Please choose action');
   console.log('Use "capture" to capture screenshots');
-  console.log('Use "compare" to compare screenshots');
+  console.log('Use "compare" to compare screenshots and generate error report');
 }
 
 if (action === 'capture') {
@@ -29,12 +28,16 @@ if (action === 'capture') {
 }
 
 if (action === 'compare') {
-  pages.forEach(function(page) {
-    resemble(imagesFolder + page.nameOriginal)
-      .compareTo(imagesFolder + page.nameNew).onComplete(function(data) {
-        console.log(data);
-        data.getDiffImage().pack()
-          .pipe(fs.createWriteStream(imagesFolder + page.nameOriginal + '.diff.png'));
-      });
+  var options = {
+    pages: pages,
+    imagesFolder: imagesFolder,
+    verbose: true
+  };
+  generateReport(options, function(error, data){
+    if (error) {
+      console.error(error);
+    } else {
+      console.log(data);
+    }
   });
 }
