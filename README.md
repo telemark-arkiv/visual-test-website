@@ -1,4 +1,6 @@
 # visual-test-website
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/telemark/visual-test-website.svg)](https://greenkeeper.io/)
 Compare screenshots
 
 ## Usage
